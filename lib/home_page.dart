@@ -9,52 +9,53 @@ class BookListPage extends StatefulWidget {
 }
 
 class _BookListPageState extends State<BookListPage> {
-  List<Map<String, dynamic>> books = [];
+  List<Map<String, dynamic>> books = []; //Untuk menyimpan data buku
 
   @override
   void initState() {
     super.initState();
-    fetchBooks(); // panggil fungsi untuk fetch data buku
+    fetchBooks(); //Memanggil fungsi fetch data buku
   }
 
-  // fungsi untuk mengambil data buku dari supabase
+  // Fungsi untuk mengambil data dari Supabase
   Future<void> fetchBooks() async {
     final response = await Supabase.instance.client.from('books').select();
 
     setState(() {
-      books = List<Map<String, dynamic>>.from(response);
+      books = List<Map<String, dynamic>>.from(response); //Menyimpan data buku
     });
   }
 
+  // Tampilan utama halaman
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Daftar Buku',
+          'Daftar Buku', //Judul halaman
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.purple[100],
+        centerTitle: true, //Judul dibuat center
+        backgroundColor: Colors.purple[100], //Warna background Appbar
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: fetchBooks, // tombol untuk refresh
+            icon: const Icon(Icons.refresh), //Ikon Tombol refresh
+            onPressed: fetchBooks, //Memanggil fungsi fetchBooks ketika tombpl ditekan
           ),
         ],
       ),
       body: books.isEmpty
           ? const Center(
-              child: CircularProgressIndicator(),
-            ) // seperti loading
+              child: CircularProgressIndicator(), //Menampilkan loading 
+            )
           : ListView.builder(
-              //Tampilan List Data
-              itemCount: books.length,
+              //Menampilkan daftar buku
+              itemCount: books.length, //Jumlah data
               itemBuilder: (context, index) {
-                final book = books[index];
+                final book = books[index]; //variable book berisi data buku
                 return ListTile(
                   title: Text(
-                    book['title'] ?? 'No Title',
+                    book['title'] ?? 'Tidak Ada Judul', //field title pada database, jika tidak ada data, maka output Tidak ada judul
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -64,14 +65,14 @@ class _BookListPageState extends State<BookListPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        book['author'] ?? 'No Author',
+                        book['author'] ?? '-', //Field author pada database, jika data kosong, output -
                         style: const TextStyle(
                           fontSize: 14,
                           fontStyle: FontStyle.italic,
                         ),
                       ),
                       Text(
-                        book['description'] ?? 'No Description',
+                        book['description'] ?? '-', //Field description paa database. jika kosong maka output -
                       ),
                     ],
                   ),
@@ -79,7 +80,7 @@ class _BookListPageState extends State<BookListPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        icon: const Icon(Icons.edit, color: Colors.blue), //ikon tombol edit dengan warna biru
                         onPressed: () {
                           // Navigator.push(
                           //   context,
@@ -94,9 +95,10 @@ class _BookListPageState extends State<BookListPage> {
                       IconButton(
                           icon: const Icon(
                             Icons.delete,
-                            color: Colors.red,
-                          ),
+                            color: Colors.red, 
+                          ), //Ikon tombol hapus dengan warna merah
                           onPressed: () {
+                            //Menampilkan konfirmasi ke user sebelum menghapus data
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -107,14 +109,14 @@ class _BookListPageState extends State<BookListPage> {
                                     actions: [
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop(); //Tutup alert jika tombol cancel ditekan
                                         },
                                         child: const Text('Cancel'),
                                       ),
                                       TextButton(
                                         onPressed: () async {
                                           // await deleteBook(book['id']);
-                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop();//Tutup alert setelah hapus data
                                         },
                                         child: const Text('Delete'),
                                       )

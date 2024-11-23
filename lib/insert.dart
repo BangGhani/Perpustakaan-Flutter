@@ -1,122 +1,3 @@
-// import 'package:flutter/material.dart';
-// // import 'package:flutter/widgets.dart';
-// import 'package:supabase_flutter/supabase_flutter.dart';
-// import 'home_page.dart';
-
-// class AddBookPage extends StatefulWidget {
-//   const AddBookPage({super.key});
-
-//   @override
-//   State<AddBookPage> createState() => _AddBookPageState();
-// }
-
-// class _AddBookPageState extends State<AddBookPage> {
-//   final _formKey = GlobalKey<FormState>();
-//   final TextEditingController _titleController = TextEditingController();
-//   final TextEditingController _authorController = TextEditingController();
-//   final TextEditingController _descriptionController = TextEditingController();
-
-//   Future<void> _addBook() async {
-//     if (!_formKey.currentState!.validate()) {
-//       return;
-//     }
-//     final title = _titleController.text;
-//     final author = _authorController.text;
-//     final description = _descriptionController.text;
-//     final response = await Supabase.instance.client
-//         .from('books')
-//         .insert({'title': title, 'author': author, 'description': description});
-
-//     if (response != null) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text('Error: ${response}')),
-//       );
-//     } else {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(content: Text('Book added successfully!')));
-//       _titleController.clear();
-//       _authorController.clear();
-//       _descriptionController.clear();
-//     }
-
-//     Navigator.pop(context, true);
-//     Navigator.pushReplacement(
-//         context, MaterialPageRoute(builder: (context) => const BookListPage()));
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Add New Book'),
-//         centerTitle: true,
-//       ),
-//       body: Container(
-//         padding: const EdgeInsets.all(15),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             TextFormField(
-//               controller: _titleController,
-//               decoration: const InputDecoration(
-//                 labelText: 'Title',
-//                 border: UnderlineInputBorder(),
-//               ),
-//               validator: (value) {
-//                 if (value == null || value.isEmpty) {
-//                   return 'Please enter the title';
-//                 }
-//                 return null;
-//               },
-//             ),
-//             const SizedBox(
-//               height: 15,
-//             ),
-//             TextFormField(
-//               controller: _authorController,
-//               decoration: const InputDecoration(
-//                 labelText: 'Author',
-//                 border: UnderlineInputBorder(),
-//               ),
-//               validator: (value) {
-//                 if (value == null || value.isEmpty) {
-//                   return 'Please enter the author';
-//                 }
-//                 return null;
-//               },
-//             ),
-//             const SizedBox(
-//               height: 15,
-//             ),
-//             TextFormField(
-//               controller: _descriptionController,
-//               decoration: const InputDecoration(
-//                 labelText: 'Description',
-//                 border: UnderlineInputBorder(),
-//               ),
-//               validator: (value) {
-//                 if (value == null || value.isEmpty) {
-//                   return 'Please enter the description';
-//                 }
-//                 return null;
-//               },
-//             ),
-//             const SizedBox(
-//               height: 40,
-//             ),
-//             Center(
-//               child: SizedBox(
-//                 width: 150,
-//                 child: ElevatedButton(
-//                     onPressed: _addBook, child: const Text('Add Book')),
-//               ),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'home_page.dart';
@@ -129,26 +10,28 @@ class AddBookPage extends StatefulWidget {
 }
 
 class _AddBookPageState extends State<AddBookPage> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _authorController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); //Membuat key untuk form agar bisa divalidasi
+  final TextEditingController _titleController = TextEditingController(); //Kontroler untuk input title
+  final TextEditingController _authorController = TextEditingController(); //Kontroler untuk input author
+  final TextEditingController _descriptionController = TextEditingController(); //Kontroler untuk input description
 
-  bool _isLoading = false; // Indikator loading
+  bool _isLoading = false; //Indikator loading untuk menampilkan progress saat data sedang diproses
 
+  //Fungsi untuk menambahkan buku ke database
   Future<void> _addBook() async {
-    if (!_formKey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) { //Cek apakah semua field valid
       return;
     }
 
     setState(() {
-      _isLoading = true;
+      _isLoading = true; //Set loading menjadi true ketika tombol ditekan
     });
 
-    final title = _titleController.text;
-    final author = _authorController.text;
-    final description = _descriptionController.text;
+    final title = _titleController.text; //Ambil nilai dari field title
+    final author = _authorController.text; //Ambil nilai dari field author
+    final description = _descriptionController.text; //Ambil nilai dari field description
 
+    //Kirim data buku ke Supabase untuk ditambahkan ke database
     final response = await Supabase.instance.client.from('books').insert({
       'title': title,
       'author': author,
@@ -156,16 +39,17 @@ class _AddBookPageState extends State<AddBookPage> {
     }).select();
 
     setState(() {
-      _isLoading = false;
+      _isLoading = false; //Set loading menjadi false setelah proses selesai
     });
 
-    if (response != null && response.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+    if (response != null && response.isNotEmpty) { //Cek jika data berhasil ditambahkan
+      ScaffoldMessenger.of(context).showSnackBar( //Tampilkan pesan sukses
         const SnackBar(content: Text('Book added successfully!')),
       );
-      _titleController.clear();
-      _authorController.clear();
-      _descriptionController.clear();
+      _titleController.clear(); //Kosongkan field title
+      _authorController.clear(); //Kosongkan field author
+      _descriptionController.clear(); //Kosongkan field description
+
       //Navigasi kembali ke halaman BookListPage setelah berhasil menambahkan
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const BookListPage()));
@@ -181,64 +65,68 @@ class _AddBookPageState extends State<AddBookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New Book'),
-        centerTitle: true,
+        title: const Text('Add New Book'), //Judul halaman
+        centerTitle: true, //Pusatkan judul halaman
       ),
       body: Container(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15), //Tambahkan padding pada body
         child: Form(
-          key: _formKey, // Gunakan form key untuk validasi
+          key: _formKey, //Gunakan form key untuk validasi input
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start, //Atur elemen kolom untuk rata kiri
             children: [
+              //Input untuk judul buku
               TextFormField(
-                controller: _titleController,
+                controller: _titleController, //Controller untuk judul buku
                 decoration: const InputDecoration(
-                  labelText: 'Title',
-                  border: UnderlineInputBorder(),
+                  labelText: 'Title', //Teks label untuk input title
+                  border: UnderlineInputBorder(), //Buat border bawah pada input
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the title';
+                  if (value == null || value.isEmpty) { //Cek jika field kosong
+                    return 'Please enter the title'; //Pesan error jika kosong
                   }
                   return null;
                 },
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 15), //Space antara elemen input
+              //Input untuk penulis buku
               TextFormField(
-                controller: _authorController,
+                controller: _authorController, //Controller untuk author buku
                 decoration: const InputDecoration(
-                  labelText: 'Author',
-                  border: UnderlineInputBorder(),
+                  labelText: 'Author', //Teks label untuk input author
+                  border: UnderlineInputBorder(), //Buat border bawah pada input
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the author';
+                  if (value == null || value.isEmpty) { //Cek jika field kosong
+                    return 'Please enter the author'; //Pesan error jika kosong
                   }
                   return null;
                 },
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 15), //Space antara elemen input
+              //Input untuk deskripsi buku
               TextFormField(
-                controller: _descriptionController,
+                controller: _descriptionController, //Controller untuk description buku
                 decoration: const InputDecoration(
-                  labelText: 'Description',
-                  border: UnderlineInputBorder(),
+                  labelText: 'Description', //Teks label untuk input description
+                  border: UnderlineInputBorder(), //Buat border bawah pada input
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the description';
+                  if (value == null || value.isEmpty) { //Cek jika field kosong
+                    return 'Please enter the description'; //Pesan error jika kosong
                   }
                   return null;
                 },
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 40), //Space lebih besar di bawah form
+              //Tombol untuk menambahkan buku
               Center(
                 child: SizedBox(
-                  width: 150,
+                  width: 150, //Tentukan lebar tombol
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _addBook,
-                    child: _isLoading
+                    onPressed: _isLoading ? null : _addBook, //Jika sedang loading, tombol tidak bisa ditekan
+                    child: _isLoading //Jika loading true, tampilkan progress indicator
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text('Add Book'),
                   ),

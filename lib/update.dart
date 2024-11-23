@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'home_page.dart';
 
 class EditBookPage extends StatefulWidget {
   final Map<String, dynamic> book;
@@ -12,7 +11,7 @@ class EditBookPage extends StatefulWidget {
 }
 
 class _EditBookPageState extends State<EditBookPage> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>(); // Untuk validasi form
   late TextEditingController _titleController;
   late TextEditingController _authorController;
   late TextEditingController _descriptionController;
@@ -20,14 +19,15 @@ class _EditBookPageState extends State<EditBookPage> {
   @override
   void initState() {
     super.initState();
-    // Initialize controllers with current book data
+    // Inisialisasi controller dengan data buku yang akan diedit
     _titleController = TextEditingController(text: widget.book['title']);
     _authorController = TextEditingController(text: widget.book['author']);
-    _descriptionController = TextEditingController(text: widget.book['description']);
+    _descriptionController =
+        TextEditingController(text: widget.book['description']);
   }
 
   Future<void> _updateBook() async {
-    if (!_formKey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) { // Cek validasi form
       return;
     }
 
@@ -35,6 +35,7 @@ class _EditBookPageState extends State<EditBookPage> {
     final author = _authorController.text;
     final description = _descriptionController.text;
 
+    // Kirim permintaan update ke Supabase
     final response = await Supabase.instance.client
         .from('books')
         .update({
@@ -42,18 +43,18 @@ class _EditBookPageState extends State<EditBookPage> {
           'author': author,
           'description': description,
         })
-        .eq('id', widget.book['id']) // Filter by book ID
+        .eq('id', widget.book['id']) // Update data berdasarkan ID
         .select();
 
     if (response == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating book')),
+        const SnackBar(content: Text('Error updating book')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Book updated successfully!')),
       );
-      Navigator.pop(context, true); // Close and refresh
+      Navigator.pop(context, true); // Tutup halaman setelah update
     }
   }
 
@@ -115,7 +116,7 @@ class _EditBookPageState extends State<EditBookPage> {
               const SizedBox(height: 40),
               Center(
                 child: ElevatedButton(
-                  onPressed: _updateBook,
+                  onPressed: _updateBook, // Panggil fungsi update saat tombol ditekan
                   child: const Text('Update Book'),
                 ),
               ),

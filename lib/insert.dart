@@ -11,15 +11,15 @@ class AddBookPage extends StatefulWidget {
 
 class _AddBookPageState extends State<AddBookPage> {
   final _formKey = GlobalKey<FormState>(); //Membuat key untuk form agar bisa divalidasi
-  final TextEditingController _titleController = TextEditingController(); //Kontroler untuk input title
-  final TextEditingController _authorController = TextEditingController(); //Kontroler untuk input author
-  final TextEditingController _descriptionController = TextEditingController(); //Kontroler untuk input description
+  final TextEditingController _titleController = TextEditingController(); //Controller untuk input title
+  final TextEditingController _authorController = TextEditingController(); //Controller untuk input author
+  final TextEditingController _descriptionController = TextEditingController(); //Controller untuk input description
 
   bool _isLoading = false; //Indikator loading untuk menampilkan progress saat data sedang diproses
 
   //Fungsi untuk menambahkan buku ke database
   Future<void> _addBook() async {
-    if (!_formKey.currentState!.validate()) { //Cek apakah semua field valid
+    if (!_formKey.currentState!.validate()) { //Untuk validasi form
       return;
     }
 
@@ -56,7 +56,7 @@ class _AddBookPageState extends State<AddBookPage> {
     } else {
       //Jika respons gagal
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error adding book. Please try again!')),
+        SnackBar(content: Text('Error adding book: ${response}. Please try again!')),
       );
     }
   }

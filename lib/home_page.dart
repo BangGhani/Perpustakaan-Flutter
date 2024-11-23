@@ -78,8 +78,9 @@ class _BookListPageState extends State<BookListPage> {
                         ),
                       ),
                       Text(
-                        book['description'] ??
-                            '-', //Field description paa database. jika kosong maka output -
+                        book['description'] ?? '-', //Field description paa database. jika kosong maka output -
+                        maxLines: 2, //maksimal baris teks adalah 2
+                        overflow: TextOverflow.ellipsis, //Jika lebih dari 2 baris gantikan dengan tiga titik (...)
                       ),
                     ],
                   ),

@@ -48,7 +48,7 @@ class _EditBookPageState extends State<EditBookPage> {
 
     if (response == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error updating book')),
+        SnackBar(content: Text('Error updating book: ${response}')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

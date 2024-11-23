@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'deleteData.dart';
 import 'insert.dart';
+import 'update.dart';
 
 class BookListPage extends StatefulWidget {
   const BookListPage({super.key});
@@ -90,14 +91,14 @@ class _BookListPageState extends State<BookListPage> {
                             color: Colors
                                 .blue), //ikon tombol edit dengan warna biru
                         onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => EditBookPage(book: book),
-                          //   ),
-                          // ).then((_) {
-                          //   fetchBooks();
-                          // });
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditBookPage(book: book),
+                            ),
+                          ).then((_) {
+                            fetchBooks();
+                          });
                         },
                       ),
                       IconButton(

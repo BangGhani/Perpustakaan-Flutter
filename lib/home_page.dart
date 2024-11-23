@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'deleteData.dart';
+import 'insert.dart';
 
 class BookListPage extends StatefulWidget {
   const BookListPage({super.key});
@@ -123,10 +124,11 @@ class _BookListPageState extends State<BookListPage> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          await deleteBook(book['id']); //Hapus buku berdasarkan ID
+                                          await deleteBook(book[
+                                              'id']); //Hapus buku berdasarkan ID
                                           await fetchBooks(); //Panggil ulang fungsi fetch data setelah dihapus
                                           if (context.mounted) {
-                                            Navigator.of(context).pop(); 
+                                            Navigator.of(context).pop();
                                           }
                                         },
                                         child: const Text('Delete'),
@@ -140,6 +142,18 @@ class _BookListPageState extends State<BookListPage> {
                 );
               },
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddBookPage(),
+            ),
+          );
+        },
+        backgroundColor: Colors.purple[100],
+        child: const Icon(Icons.add), //Ikon tambah
+      ),
     );
   }
 }

@@ -35,7 +35,7 @@ class _BookListPageState extends State<BookListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Daftar Buku', //Judul halaman
+          'Books List', //Judul halaman
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true, //Judul dibuat center

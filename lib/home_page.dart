@@ -1,8 +1,10 @@
+import 'package:crud_perpustakaan/main.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'deleteData.dart';
 import 'insert.dart';
 import 'update.dart';
+import 'login.dart';
 
 class BookListPage extends StatefulWidget {
   const BookListPage({super.key});
@@ -22,10 +24,19 @@ class _BookListPageState extends State<BookListPage> {
 
   // Fungsi untuk mengambil data dari Supabase
   Future<void> fetchBooks() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) {
+      // Jika user tidak login, arahkan ke halaman login
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+      return;
+    }
+
     final response = await Supabase.instance.client.from('books').select();
 
     setState(() {
-      books = List<Map<String, dynamic>>.from(response); //Menyimpan data buku
+      books = List<Map<String, dynamic>>.from(response);
     });
   }
 
@@ -35,16 +46,33 @@ class _BookListPageState extends State<BookListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Books List', //Judul halaman
+          'Books List',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        centerTitle: true, //Judul dibuat center
-        backgroundColor: Colors.purple[100], //Warna background Appbar
+        centerTitle: true,
+        backgroundColor: Colors.purple[100],
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh), //Ikon Tombol refresh
-            onPressed:
-                fetchBooks, //Memanggil fungsi fetchBooks ketika tombpl ditekan
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              try {
+                await Supabase.instance.client.auth.signOut(); // Proses logout
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  ); // Arahkan ke halaman login
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Logout failed: ${e.toString()}')),
+                );
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: fetchBooks,
           ),
         ],
       ),
@@ -78,9 +106,11 @@ class _BookListPageState extends State<BookListPage> {
                         ),
                       ),
                       Text(
-                        book['description'] ?? '-', //Field description paa database. jika kosong maka output -
+                        book['description'] ??
+                            '-', //Field description paa database. jika kosong maka output -
                         maxLines: 2, //maksimal baris teks adalah 2
-                        overflow: TextOverflow.ellipsis, //Jika lebih dari 2 baris gantikan dengan tiga titik (...)
+                        overflow: TextOverflow
+                            .ellipsis, //Jika lebih dari 2 baris gantikan dengan tiga titik (...)
                       ),
                     ],
                   ),
